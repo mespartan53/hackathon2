@@ -21,7 +21,7 @@ class _HomeViewState extends State<HomeView> {
   Map<String, GlobalKey<MovingWidgState>> widgKeys = {
     'moveUp': GlobalKey(),
     'moveRight': GlobalKey(),
-    'moveLeft': GlobalKey()
+    'moveLeft': GlobalKey(),
   };
 
   @override
@@ -70,6 +70,9 @@ class _HomeViewState extends State<HomeView> {
       return 3;
     }
     if (ResponsiveWrapper.of(context).isMobile) {
+      return 2;
+    }
+    if (ResponsiveWrapper.of(context).isPhone) {
       return 2;
     }
     return 4;

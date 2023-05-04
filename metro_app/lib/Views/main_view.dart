@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:metro_app/ViewModels/admin_viewmodel.dart';
 import 'package:metro_app/ViewModels/main_viewmodel.dart';
+import 'package:metro_app/Views/admin_view.dart';
 import 'package:metro_app/Views/home_view.dart';
 import '../Widgets/hover_text.dart';
 import 'package:provider/provider.dart';
@@ -13,15 +15,16 @@ class MainView extends StatefulWidget {
 }
 
 class _MainViewState extends State<MainView> {
-  HomeViewModel viewModel = HomeViewModel();
+  MainViewModel viewModel = MainViewModel();
+  AdminViewModel adminVM = AdminViewModel();
 
   final IconData homeIcon = Icons.home;
-  final IconData favoriteIcon = Icons.star;
-  final IconData aboutIcon = Icons.info_sharp;
+  final IconData favoriteIcon = Icons.phone_enabled;
+  final IconData aboutIcon = Icons.adb_rounded;
 
   final String homeText = 'Home';
-  final String favText = 'Favorites';
-  final String aboutText = 'About';
+  final String favText = 'On Call';
+  final String aboutText = 'Admin';
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class _MainViewState extends State<MainView> {
         drawer: Drawer(
           width: 225,
           elevation: 0,
-          child: Consumer<HomeViewModel>(
+          child: Consumer<MainViewModel>(
             builder: (BuildContext context, value, Widget? child) {
               return ListView(
                 children: [
@@ -100,7 +103,7 @@ class _MainViewState extends State<MainView> {
         body: Row(
           children: [
             ResponsiveWrapper.of(context).isLargerThan(MOBILE)
-                ? Consumer<HomeViewModel>(
+                ? Consumer<MainViewModel>(
                     builder: (BuildContext context, value, Widget? child) {
                       return NavigationRail(
                         selectedIndex: viewModel.selectedIndex,
@@ -137,11 +140,10 @@ class _MainViewState extends State<MainView> {
                     },
                   )
                 : const SizedBox.shrink(),
-            Consumer<HomeViewModel>(
+            Consumer<MainViewModel>(
                 builder: (BuildContext context, value, Widget? child) {
               return Expanded(
                 child: SizedBox(
-                  height: double.infinity,
                   width: double.infinity,
                   child: Stack(
                     alignment: AlignmentDirectional.topCenter,
@@ -167,8 +169,9 @@ class _MainViewState extends State<MainView> {
           child: Text('Favorites View'),
         );
       case 2:
-        return const Center(
-          child: Text('About View'),
+        return ChangeNotifierProvider.value(
+          value: adminVM,
+          child: const AdminView(),
         );
       default:
         return const HomeView();

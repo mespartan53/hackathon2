@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class HomeViewModel extends ChangeNotifier {
+class MainViewModel extends ChangeNotifier {
   int selectedIndex = 0;
 
   updateIndex(int newIndex) {
