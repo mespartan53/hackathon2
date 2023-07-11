@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:metro_app/ViewModels/admin_viewmodel.dart';
+import 'package:metro_app/ViewModels/home_viewmodel.dart';
 import 'package:metro_app/ViewModels/main_viewmodel.dart';
+import 'package:metro_app/ViewModels/on_call_viewmodel.dart';
 import 'package:metro_app/Views/admin_view.dart';
 import 'package:metro_app/Views/home_view.dart';
 import '../Widgets/hover_text.dart';
@@ -17,6 +19,8 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   MainViewModel viewModel = MainViewModel();
   AdminViewModel adminVM = AdminViewModel();
+  HomeViewModel homeVM = HomeViewModel();
+  OnCallViewModel onCallVM = OnCallViewModel();
 
   final IconData homeIcon = Icons.home;
   final IconData favoriteIcon = Icons.phone_enabled;
@@ -59,22 +63,6 @@ class _MainViewState extends State<MainView> {
                     leading: Icon(
                       homeIcon,
                       color: viewModel.selectedIndex == 0
-                          ? Colors.blue
-                          : Colors.grey,
-                    ),
-                  ),
-                  ListTile(
-                    title: HoverText(
-                      text: favText,
-                      mainColor: Colors.black,
-                      hoverColor: Colors.blue,
-                      onTap: () {
-                        viewModel.updateIndex(1);
-                      },
-                    ),
-                    leading: Icon(
-                      favoriteIcon,
-                      color: viewModel.selectedIndex == 1
                           ? Colors.blue
                           : Colors.grey,
                     ),
@@ -124,12 +112,6 @@ class _MainViewState extends State<MainView> {
                                 style: const TextStyle(color: Colors.black),
                               )),
                           NavigationRailDestination(
-                              icon: Icon(favoriteIcon),
-                              label: Text(
-                                favText,
-                                style: const TextStyle(color: Colors.black),
-                              )),
-                          NavigationRailDestination(
                               icon: Icon(aboutIcon),
                               label: Text(
                                 aboutText,
@@ -163,18 +145,20 @@ class _MainViewState extends State<MainView> {
   Widget buildPage(index) {
     switch (index) {
       case 0:
-        return const HomeView();
-      case 1:
-        return const Center(
-          child: Text('Favorites View'),
+        return ChangeNotifierProvider.value(
+          value: homeVM,
+          child: const HomeView(),
         );
-      case 2:
+      case 1:
         return ChangeNotifierProvider.value(
           value: adminVM,
           child: const AdminView(),
         );
       default:
-        return const HomeView();
+        return ChangeNotifierProvider.value(
+          value: homeVM,
+          child: const HomeView(),
+        );
     }
   }
 }
