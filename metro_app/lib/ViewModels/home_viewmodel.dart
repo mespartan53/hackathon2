@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Models/employee_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -57,7 +58,7 @@ class HomeViewModel extends ChangeNotifier {
             subtitle: Text('${element.department}: ${element.phone.replaceAllMapped(
                 RegExp(r'(\d{3})(\d{3})(\d+)'),
                 (Match m) => "(${m[1]}) ${m[2]}-${m[3]}")}'),
-            tileColor: element.onCall ? Colors.greenAccent[100] : Colors.white,
+            tileColor: element.onCall ? Colors.blue[100] : Colors.white,
             leading: InkWell(
               child: const Icon(
                 Icons.copy,
@@ -70,6 +71,16 @@ class HomeViewModel extends ChangeNotifier {
                     content: Text(
                         'Copied ${element.firstname} phone # to clipboard')));
               },
+            ),
+            trailing: Text(
+              element.onCall
+              ? 'On Call'
+              : '',
+              style: GoogleFonts.raleway(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[500],
+              ),
             ),
           ),
         ));
@@ -96,7 +107,7 @@ class HomeViewModel extends ChangeNotifier {
             subtitle: Text('${element.department}: ${element.phone.replaceAllMapped(
                 RegExp(r'(\d{3})(\d{3})(\d+)'),
                 (Match m) => "(${m[1]}) ${m[2]}-${m[3]}")}'),
-            tileColor: element.onCall ? Colors.greenAccent[100] : Colors.white,
+            tileColor: element.onCall ? Colors.blue[100] : Colors.white,
             leading: InkWell(
               child: const Icon(
                 Icons.copy,
@@ -109,6 +120,16 @@ class HomeViewModel extends ChangeNotifier {
                     content: Text(
                         'Copied ${element.firstname} phone # to clipboard')));
               },
+            ),
+            trailing: Text(
+              element.onCall
+              ? 'On Call'
+              : '',
+              style: GoogleFonts.raleway(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[500],
+              ),
             ),
           ),
         ));

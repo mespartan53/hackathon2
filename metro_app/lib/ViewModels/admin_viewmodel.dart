@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AdminViewModel extends ChangeNotifier {
   final String pwd = '123456';
   bool isSignedIn = false; //needs to be set to false when deployed
+  bool obscurePwd = true;
   late List<Employee> allEmployees = [];
   late List<Employee> filteredEmployees = [];
 
@@ -121,7 +122,7 @@ class AdminViewModel extends ChangeNotifier {
             subtitle: Text('${element.department}: ${element.phone.replaceAllMapped(
                 RegExp(r'(\d{3})(\d{3})(\d+)'),
                 (Match m) => "(${m[1]}) ${m[2]}-${m[3]}")}'),
-            tileColor: element.onCall ? Colors.greenAccent[100] : Colors.white,
+            tileColor: element.onCall ? Colors.blue[100] : Colors.white,
             onTap: () {
               bool temp = element.onCall;
               element.onCall = !element.onCall;

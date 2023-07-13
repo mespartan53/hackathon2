@@ -44,7 +44,9 @@ class _HomeViewState extends State<HomeView> {
                 ResponsiveRowColumnItem(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
+                          ? MediaQuery.of(context).size.width * 0.9
+                          : MediaQuery.of(context).size.width * 0.45,
                     child: Column(
                       children: [
                             Text(
@@ -94,7 +96,9 @@ class _HomeViewState extends State<HomeView> {
                 ResponsiveRowColumnItem(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
+                          ? MediaQuery.of(context).size.width * 0.9
+                          : MediaQuery.of(context).size.width * 0.45,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
