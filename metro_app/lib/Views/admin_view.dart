@@ -4,6 +4,7 @@ import 'package:metro_app/ViewModels/admin_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import '../Models/employee_model.dart';
+import 'dart:js' as js;
 
 class AdminView extends StatefulWidget {
   const AdminView({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class AdminView extends StatefulWidget {
 class _AdminViewState extends State<AdminView> {
   final _formkey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
+  final FocusNode pwdNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +66,10 @@ class _AdminViewState extends State<AdminView> {
                           ),
                         ),
                         ResponsiveRowColumn(
-                          layout:
-                              ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
-                                  ? ResponsiveRowColumnType.COLUMN
-                                  : ResponsiveRowColumnType.ROW,
+                          layout: ResponsiveWrapper.of(context)
+                                  .isSmallerThan(DESKTOP)
+                              ? ResponsiveRowColumnType.COLUMN
+                              : ResponsiveRowColumnType.ROW,
                           rowCrossAxisAlignment: CrossAxisAlignment.center,
                           rowMainAxisAlignment: MainAxisAlignment.center,
                           columnCrossAxisAlignment: CrossAxisAlignment.center,
@@ -109,17 +111,17 @@ class _AdminViewState extends State<AdminView> {
                                   }
                                   return null;
                                 },
-                                decoration:
-                                    const InputDecoration(labelText: 'Last Name'),
+                                decoration: const InputDecoration(
+                                    labelText: 'Last Name'),
                               ),
                             ),
                           ],
                         ),
                         ResponsiveRowColumn(
-                          layout:
-                              ResponsiveWrapper.of(context).isSmallerThan(DESKTOP)
-                                  ? ResponsiveRowColumnType.COLUMN
-                                  : ResponsiveRowColumnType.ROW,
+                          layout: ResponsiveWrapper.of(context)
+                                  .isSmallerThan(DESKTOP)
+                              ? ResponsiveRowColumnType.COLUMN
+                              : ResponsiveRowColumnType.ROW,
                           rowCrossAxisAlignment: CrossAxisAlignment.center,
                           rowMainAxisAlignment: MainAxisAlignment.center,
                           columnCrossAxisAlignment: CrossAxisAlignment.center,
@@ -194,7 +196,8 @@ class _AdminViewState extends State<AdminView> {
                                     phone: viewModel.phoneController.text,
                                     department: viewModel.department,
                                     onCall: false);
-                                await viewModel.createEmployee(context, employee);
+                                await viewModel.createEmployee(
+                                    context, employee);
                               }
                             },
                             child: const Text('Submit')),
@@ -203,7 +206,9 @@ class _AdminViewState extends State<AdminView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 'All Employees',
                 style: GoogleFonts.raleway(
@@ -214,28 +219,35 @@ class _AdminViewState extends State<AdminView> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Container(
                 width: 400,
-                decoration:  BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                  border: Border.all(color: Colors.blue)
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5.0),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                    border: Border.all(color: Colors.blue)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5.0),
                 child: TextField(
                   controller: viewModel.searchController,
-                  decoration: const InputDecoration(
-                    hintText: 'Search'
-                  ),
+                  decoration: const InputDecoration(hintText: 'Search'),
                   onChanged: (value) {
                     viewModel.getEmployeesByFilter(value);
                   },
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
             ] +
-            viewModel.getAllEmployeesAsWidget(context) + const [SizedBox(height: 30,)],
+            viewModel.getAllEmployeesAsWidget(context) +
+            const [
+              SizedBox(
+                height: 30,
+              )
+            ],
       ),
     );
   }
@@ -254,8 +266,25 @@ class _AdminViewState extends State<AdminView> {
                 const Text("Admin Sign In"),
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(labelText: 'Password'),
+                  obscureText: viewModel.obscurePwd,
+                  focusNode: pwdNode,
+                  onChanged: (_) async {
+                    fixEdgePasswordRevealButton(pwdNode);
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(viewModel.obscurePwd
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          viewModel.obscurePwd = !viewModel.obscurePwd;
+                        });
+                      },
+                    ),
+                    
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please input a value';
@@ -339,4 +368,12 @@ class _ExpandableViewState extends State<ExpandableView> {
       ),
     );
   }
+}
+
+void fixEdgePasswordRevealButton(FocusNode passwordFocusNode) {
+  passwordFocusNode.unfocus();
+  Future.microtask(() {
+    passwordFocusNode.requestFocus();
+    js.context.callMethod("fixPasswordCss", []);
+  });
 }

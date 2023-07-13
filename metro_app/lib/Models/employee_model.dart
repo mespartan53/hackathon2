@@ -4,7 +4,7 @@ class Employee {
   final String lastname;
   final String phone;
   final String department;
-  final bool onCall;
+  late bool onCall;
 
   Employee({
     this.id,

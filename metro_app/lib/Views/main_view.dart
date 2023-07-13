@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:metro_app/ViewModels/admin_viewmodel.dart';
+import 'package:metro_app/ViewModels/home_viewmodel.dart';
 import 'package:metro_app/ViewModels/main_viewmodel.dart';
+import 'package:metro_app/ViewModels/on_call_viewmodel.dart';
 import 'package:metro_app/Views/admin_view.dart';
 import 'package:metro_app/Views/home_view.dart';
 import '../Widgets/hover_text.dart';
@@ -17,6 +19,8 @@ class MainView extends StatefulWidget {
 class _MainViewState extends State<MainView> {
   MainViewModel viewModel = MainViewModel();
   AdminViewModel adminVM = AdminViewModel();
+  HomeViewModel homeVM = HomeViewModel();
+  OnCallViewModel onCallVM = OnCallViewModel();
 
   final IconData homeIcon = Icons.home;
   final IconData favoriteIcon = Icons.phone_enabled;
@@ -36,7 +40,7 @@ class _MainViewState extends State<MainView> {
                 title: const SelectableText('The Metro App'),
                 elevation: 0,
                 centerTitle: true,
-                backgroundColor: Colors.green,
+                backgroundColor: Colors.blueGrey[700],
               )
             : null,
         drawer: Drawer(
@@ -51,7 +55,7 @@ class _MainViewState extends State<MainView> {
                     title: HoverText(
                       text: homeText,
                       mainColor: Colors.black,
-                      hoverColor: Colors.blue,
+                      hoverColor: Colors.blueGrey,
                       onTap: () {
                         viewModel.updateIndex(0);
                       },
@@ -59,40 +63,24 @@ class _MainViewState extends State<MainView> {
                     leading: Icon(
                       homeIcon,
                       color: viewModel.selectedIndex == 0
-                          ? Colors.blue
-                          : Colors.grey,
-                    ),
-                  ),
-                  ListTile(
-                    title: HoverText(
-                      text: favText,
-                      mainColor: Colors.black,
-                      hoverColor: Colors.blue,
-                      onTap: () {
-                        viewModel.updateIndex(1);
-                      },
-                    ),
-                    leading: Icon(
-                      favoriteIcon,
-                      color: viewModel.selectedIndex == 1
-                          ? Colors.blue
-                          : Colors.grey,
+                          ? Colors.blueGrey
+                          : Colors.grey[350],
                     ),
                   ),
                   ListTile(
                     title: HoverText(
                       text: aboutText,
                       mainColor: Colors.black,
-                      hoverColor: Colors.blue,
+                      hoverColor: Colors.blueGrey,
                       onTap: () {
-                        viewModel.updateIndex(2);
+                        viewModel.updateIndex(1);
                       },
                     ),
                     leading: Icon(
                       aboutIcon,
-                      color: viewModel.selectedIndex == 2
-                          ? Colors.blue
-                          : Colors.grey,
+                      color: viewModel.selectedIndex == 1
+                          ? Colors.blueGrey
+                          : Colors.grey[350],
                     ),
                   ),
                 ],
@@ -100,6 +88,7 @@ class _MainViewState extends State<MainView> {
             },
           ),
         ),
+        backgroundColor: Colors.grey[300],
         body: Row(
           children: [
             ResponsiveWrapper.of(context).isLargerThan(MOBILE)
@@ -114,26 +103,20 @@ class _MainViewState extends State<MainView> {
                         },
                         minWidth: 65,
                         labelType: NavigationRailLabelType.all,
-                        indicatorColor: Colors.blueGrey[50],
-                        backgroundColor: Colors.green,
+                        indicatorColor: Colors.black,
+                        backgroundColor: Colors.blueGrey[700],
                         destinations: [
                           NavigationRailDestination(
-                              icon: Icon(homeIcon),
+                              icon: Icon(homeIcon, color: Colors.white),
                               label: Text(
                                 homeText,
-                                style: const TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.white),
                               )),
                           NavigationRailDestination(
-                              icon: Icon(favoriteIcon),
-                              label: Text(
-                                favText,
-                                style: const TextStyle(color: Colors.black),
-                              )),
-                          NavigationRailDestination(
-                              icon: Icon(aboutIcon),
+                              icon: Icon(aboutIcon, color: Colors.white),
                               label: Text(
                                 aboutText,
-                                style: const TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.white),
                               )),
                         ],
                       );
@@ -163,18 +146,23 @@ class _MainViewState extends State<MainView> {
   Widget buildPage(index) {
     switch (index) {
       case 0:
-        return const HomeView();
-      case 1:
-        return const Center(
-          child: Text('Favorites View'),
+        homeVM.getAllEmployees();
+        return ChangeNotifierProvider.value(
+          value: homeVM,
+          child: const HomeView(),
         );
-      case 2:
+      case 1:
+        adminVM.getAllEmployees();
         return ChangeNotifierProvider.value(
           value: adminVM,
           child: const AdminView(),
         );
       default:
-        return const HomeView();
+        homeVM.getAllEmployees();
+        return ChangeNotifierProvider.value(
+          value: homeVM,
+          child: const HomeView(),
+        );
     }
   }
 }

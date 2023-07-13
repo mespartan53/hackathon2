@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AdminViewModel extends ChangeNotifier {
   final String pwd = '123456';
   bool isSignedIn = false; //needs to be set to false when deployed
+  bool obscurePwd = true;
   late List<Employee> allEmployees = [];
   late List<Employee> filteredEmployees = [];
 
@@ -17,9 +18,18 @@ class AdminViewModel extends ChangeNotifier {
   late String department;
 
   List<String> departmentItems = [
+    'Administrative Services',
+    'Comprehensive Planning',
+    'Engineering',
+    'Environmental Services',
     'Human Resources',
-    'IT',
+    'Information Technology',
+    'Maintenance',
+    'NTP',
     'Operations',
+    'RR&R',
+    'Strategy and Communications',
+    'Technology and Innovation'
   ];
 
   AdminViewModel() {
@@ -112,6 +122,30 @@ class AdminViewModel extends ChangeNotifier {
             subtitle: Text('${element.department}: ${element.phone.replaceAllMapped(
                 RegExp(r'(\d{3})(\d{3})(\d+)'),
                 (Match m) => "(${m[1]}) ${m[2]}-${m[3]}")}'),
+            tileColor: element.onCall ? Colors.blue[100] : Colors.white,
+            onTap: () {
+              bool temp = element.onCall;
+              element.onCall = !element.onCall;
+              notifyListeners();
+              DocumentReference employee = FirebaseFirestore.instance.collection('employees').doc(element.id);
+    employee
+    .withConverter<Employee>(
+      fromFirestore: (snapshot, _) => Employee.fromJson(snapshot.data()!),
+      toFirestore: (employee, _) => employee.toMap())
+    .set(element)
+    .then((value) {
+      if (element.onCall) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${element.firstname} was switched to on call')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${element.firstname} is no longer on call')));
+      }
+    },)
+    .onError((error, stackTrace) {
+      element.onCall = temp; 
+      notifyListeners();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error updating on call status')));
+    });
+            },
             leading: InkWell(
               child: const Icon(
                 Icons.copy,
@@ -143,6 +177,11 @@ class AdminViewModel extends ChangeNotifier {
       }
       return allWidgets;
     }
+  }
+
+  Future<void> setOnCall(BuildContext context, String id) async {
+    DocumentReference employee = FirebaseFirestore.instance.collection('employees').doc(id);
+    employee.set({'onCall': true});
   }
 
   Future<void> removeEmployee(BuildContext context, String id) async {
