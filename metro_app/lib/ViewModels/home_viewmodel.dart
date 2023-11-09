@@ -40,6 +40,8 @@ class HomeViewModel extends ChangeNotifier {
     });
   }
 
+  //TODO: refoctor to not include UI elements
+  //      create a widget that takes in an employee class
   List<Widget> getAllEmployeesAsWidget(BuildContext context) {
     List<Employee> tempEmployees;
     if (filteredEmployees.isEmpty) {
@@ -89,6 +91,7 @@ class HomeViewModel extends ChangeNotifier {
     }
   }
 
+  //TODO: refoctor to not include UI elements
   List<Widget> getAllOnCallEmployeesAsWidget(BuildContext context) {
     List<Employee> tempEmployees = [];
     for(var e in allEmployees) {

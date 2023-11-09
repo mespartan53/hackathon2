@@ -104,6 +104,7 @@ class AdminViewModel extends ChangeNotifier {
     });
   }
 
+  //TODO: refoctor to not include UI elements
   List<Widget> getAllEmployeesAsWidget(BuildContext context) {
     List<Employee> tempEmployees;
     if (filteredEmployees.isEmpty) {
